@@ -29,7 +29,7 @@ const Home = () => {
 
   useEffect(() => {
     if (currentUser === null || !currentUser) {
-      navigate("/login")
+      navigate("/")
     } else {
       setUserInfo(currentUser?.rest)
       getAllNotes()
