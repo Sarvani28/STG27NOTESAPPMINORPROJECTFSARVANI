@@ -2,7 +2,7 @@ import axios from "axios"
 
 const baseURL =
   import.meta.env.VITE_API_BASE_URL || "https://stg27notesappminorprojectsarvani.onrender.com"
-
+axios.defaults.withCredentials = true;
 const axiosInstance = axios.create({
   baseURL: baseURL,
   withCredentials: true, // ✅ Required for cross-origin cookie access (auth sessions)

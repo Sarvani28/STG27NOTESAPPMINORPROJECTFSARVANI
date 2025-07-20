@@ -39,7 +39,7 @@ const Home = () => {
   // get all notes
   const getAllNotes = async () => {
     try {
-      const res = await axios.get(`http://localhost:3000/api/note/all`, {
+      const res = await axios.get(`https://stg27notesappminorprojectsarvani.onrender.com/api/note/all`, {
         withCredentials: true,
       })
 

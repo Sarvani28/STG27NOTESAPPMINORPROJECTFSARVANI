@@ -1,62 +1,62 @@
-import React, { useState } from "react"
-import { MdClose } from "react-icons/md"
-import TagInput from "../../components/Input/TagInput"
-import axios from "../../services/axios"
-import { toast } from "react-toastify"
+import React, { useState } from "react";
+import { MdClose } from "react-icons/md";
+import TagInput from "../../components/Input/TagInput";
+import axios from "../../services/axios";
+import { toast } from "react-toastify";
 
 const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
-  const [title, setTitle] = useState(noteData?.title || "")
-  const [content, setContent] = useState(noteData?.content || "")
-  const [tags, setTags] = useState(noteData?.tags || [])
-  const [error, setError] = useState(null)
+  const [title, setTitle] = useState(noteData?.title || "");
+  const [content, setContent] = useState(noteData?.content || "");
+  const [tags, setTags] = useState(noteData?.tags || []);
+  const [error, setError] = useState(null);
 
   const handleAddOrEdit = async () => {
-    if (!title) {
-      setError("Please enter the title")
-      return
+    if (!title.trim()) {
+      setError("Please enter the title");
+      return;
     }
 
-    if (!content) {
-      setError("Please enter the content")
-      return
+    if (!content.trim()) {
+      setError("Please enter the content");
+      return;
     }
 
-    setError("")
+    setError("");
 
     try {
-      let res
+      let res;
 
       if (type === "edit") {
-        const noteId = noteData._id
-        res = await axios.post(`/api/note/edit/${noteId}`, {
-          title,
-          content,
-          tags,
-        })
+        const noteId = noteData._id;
+        res = await axios.post(
+          `/api/note/edit/${noteId}`,
+          { title, content, tags },
+          { withCredentials: true }
+        );
       } else {
-        res = await axios.post("/api/note/add", {
-          title,
-          content,
-          tags,
-        })
+        res = await axios.post(
+          "/api/note/add",
+          { title, content, tags },
+          { withCredentials: true }
+        );
       }
 
       if (res.data.success === false) {
-        toast.error(res.data.message)
-        setError(res.data.message)
-        return
+        toast.error(res.data.message);
+        setError(res.data.message);
+        return;
       }
 
-      toast.success(res.data.message)
-      getAllNotes()
-      onClose()
+      toast.success(res.data.message);
+      getAllNotes();
+      onClose();
     } catch (error) {
       const message =
-        error.response?.data?.message || error.message || "Something went wrong"
-      toast.error(message)
-      setError(message)
+        error.response?.data?.message || error.message || "Something went wrong";
+      toast.error(message);
+      setError(message);
     }
-  }
+  };
 
   return (
     <div className="relative">
@@ -103,7 +103,7 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
         {type === "edit" ? "UPDATE" : "ADD"}
       </button>
     </div>
-  )
-}
+  );
+};
 
-export default AddEditNotes
+export default AddEditNotes;
