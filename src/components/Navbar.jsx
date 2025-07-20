@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import SearchBar from "./SearchBar/SearchBar"
 import ProfileInfo from "./Cards/ProfileInfo"
 import { Link, useNavigate } from "react-router-dom"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import {
   signInSuccess,
@@ -11,11 +11,13 @@ import {
 } from "../redux/user/userSlice"
 import axios from "axios"
 
-const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
+const Navbar = ({ onSearchNote, handleClearSearch }) => {
   const [searchQuery, setSearchQuery] = useState("")
-
   const navigate = useNavigate()
   const dispatch = useDispatch()
+
+  // 🔴 Get user info from Redux store
+  const userInfo = useSelector((state) => state.user.currentUser)
 
   const handleSearch = () => {
     if (searchQuery) {
@@ -32,9 +34,10 @@ const Navbar = ({ userInfo, onSearchNote, handleClearSearch }) => {
     try {
       dispatch(signoutStart())
 
-      const res = await axios.get("https://stg27notesappminorprojectsarvani.onrender.com/api/auth/signout", {
-        withCredentials: true,
-      })
+      const res = await axios.get(
+        "https://stg27notesappminorprojectsarvani.onrender.com/api/auth/signout",
+        { withCredentials: true }
+      )
 
       if (res.data.success === false) {
         dispatch(signoutFailure(res.data.message))
