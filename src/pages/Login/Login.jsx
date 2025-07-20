@@ -9,7 +9,7 @@ import {
   signInSuccess,
 } from "../../redux/user/userSlice"
 import { toast } from "react-toastify"
-import axios from "../../services/axios" // ✅ custom Axios instance
+import axios from "../../services/axios" // custom Axios instance
 
 const Login = () => {
   const [email, setEmail] = useState("")
@@ -22,6 +22,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault()
 
+    // Basic validation
     if (!validateEmail(email)) {
       setError("Please enter a valid email address")
       return
@@ -36,7 +37,13 @@ const Login = () => {
     dispatch(signInStart())
 
     try {
-      const res = await axios.post("/api/auth/signin", { email, password })
+      const res = await axios.post(
+        "/api/auth/signin",
+        { email, password },
+        {
+          withCredentials: true, // Required for sending/receiving cookies
+        }
+      )
 
       if (res.data.success === false) {
         toast.error(res.data.message)
@@ -44,7 +51,7 @@ const Login = () => {
         return
       }
 
-      toast.success(res.data.message)
+      toast.success(res.data.message || "Login successful")
       dispatch(signInSuccess(res.data))
       navigate("/home")
     } catch (error) {

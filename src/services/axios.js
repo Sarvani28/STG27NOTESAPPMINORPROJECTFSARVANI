@@ -1,8 +1,23 @@
-import axios from "axios";
+import axios from "axios"
+
+const baseURL =
+  import.meta.env.VITE_API_BASE_URL || "https://stg27notesappminorprojectsarvani.onrender.com"
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL,
-  withCredentials: true, //  for sending cookies in cross-origin requests
-});
+  baseURL: baseURL,
+  withCredentials: true, // ✅ Required for cross-origin cookie access (auth sessions)
+  headers: {
+    "Content-Type": "application/json",
+  },
+})
 
-export default axiosInstance;
+// Optional: intercept requests to add debugging/logging
+axiosInstance.interceptors.request.use(
+  (config) => {
+    // console.log("Sending request to:", config.url)
+    return config
+  },
+  (error) => Promise.reject(error)
+)
+
+export default axiosInstance
