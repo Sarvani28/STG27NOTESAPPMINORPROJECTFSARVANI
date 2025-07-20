@@ -8,8 +8,8 @@ import {
   signInStart,
   signInSuccess,
 } from "../../redux/user/userSlice"
-import axios from "axios"
 import { toast } from "react-toastify"
+import axios from "../../services/axios" // ✅ custom Axios instance
 
 const Login = () => {
   const [email, setEmail] = useState("")
@@ -33,30 +33,25 @@ const Login = () => {
     }
 
     setError("")
-
-    // Login API
+    dispatch(signInStart())
 
     try {
-      dispatch(signInStart())
-
-      const res = await axios.post(
-        "https://stg27notesappminorprojectsarvani.onrender.com/api/auth/signin",
-        { email, password },
-        { withCredentials: true }
-      )
+      const res = await axios.post("/api/auth/signin", { email, password })
 
       if (res.data.success === false) {
         toast.error(res.data.message)
-        console.log(res.data)
-        dispatch(signInFailure(data.message))
+        dispatch(signInFailure(res.data.message))
+        return
       }
 
       toast.success(res.data.message)
       dispatch(signInSuccess(res.data))
       navigate("/home")
     } catch (error) {
-      toast.error(error.message)
-      dispatch(signInFailure(error.message))
+      const message =
+        error.response?.data?.message || error.message || "Login failed"
+      toast.error(message)
+      dispatch(signInFailure(message))
     }
   }
 

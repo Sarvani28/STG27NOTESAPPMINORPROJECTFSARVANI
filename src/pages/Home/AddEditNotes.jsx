@@ -1,73 +1,16 @@
 import React, { useState } from "react"
 import { MdClose } from "react-icons/md"
 import TagInput from "../../components/Input/TagInput"
-import axios from "axios"
+import axios from "../../services/axios"
 import { toast } from "react-toastify"
+
 const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
   const [title, setTitle] = useState(noteData?.title || "")
   const [content, setContent] = useState(noteData?.content || "")
   const [tags, setTags] = useState(noteData?.tags || [])
   const [error, setError] = useState(null)
 
-  //   Edit Note
-  const editNote = async () => {
-    const noteId = noteData._id
-    console.log(noteId)
-
-    try {
-      const res = await axios.post(
-        "https://stg27notesappminorprojectsarvani.onrender.com/api/note/edit/" + noteId,
-        { title, content, tags },
-        { withCredentials: true }
-      )
-
-      console.log(res.data)
-
-      if (res.data.success === false) {
-        console.log(res.data.message)
-        setError(res.data.message)
-        toast.error(res.data.message)
-        return
-      }
-
-      toast.success(res.data.message)
-      getAllNotes()
-      onClose()
-    } catch (error) {
-      toast.error(error.message)
-      console.log(error.message)
-      setError(error.message)
-    }
-  }
-
-  //   Add Note
-  const addNewNote = async () => {
-    try {
-      const res = await axios.post(
-        "https://stg27notesappminorprojectsarvani.onrender.com/api/note/add",
-        { title, content, tags },
-        { withCredentials: true }
-      )
-
-      if (res.data.success === false) {
-        console.log(res.data.message)
-        setError(res.data.message)
-        toast.error(res.data.message)
-
-        return
-      }
-
-      toast.success(res.data.message)
-      getAllNotes()
-      onClose()
-    } catch (error) {
-      toast.error(error.message)
-      console.log(error.message)
-      setError(error.message)
-    }
-  }
-
-  const handleAddNote = () => {
+  const handleAddOrEdit = async () => {
     if (!title) {
       setError("Please enter the title")
       return
@@ -80,10 +23,38 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
 
     setError("")
 
-    if (type === "edit") {
-      editNote()
-    } else {
-      addNewNote()
+    try {
+      let res
+
+      if (type === "edit") {
+        const noteId = noteData._id
+        res = await axios.post(`/api/note/edit/${noteId}`, {
+          title,
+          content,
+          tags,
+        })
+      } else {
+        res = await axios.post("/api/note/add", {
+          title,
+          content,
+          tags,
+        })
+      }
+
+      if (res.data.success === false) {
+        toast.error(res.data.message)
+        setError(res.data.message)
+        return
+      }
+
+      toast.success(res.data.message)
+      getAllNotes()
+      onClose()
+    } catch (error) {
+      const message =
+        error.response?.data?.message || error.message || "Something went wrong"
+      toast.error(message)
+      setError(message)
     }
   }
 
@@ -95,9 +66,9 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
       >
         <MdClose className="text-xl text-slate-400" />
       </button>
+
       <div className="flex flex-col gap-2">
         <label className="input-label text-red-400 uppercase">Title</label>
-
         <input
           type="text"
           className="text-2xl text-slate-950 outline-none"
@@ -106,11 +77,10 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
           onChange={({ target }) => setTitle(target.value)}
         />
       </div>
+
       <div className="flex flex-col gap-2 mt-4">
         <label className="input-label text-red-400 uppercase">Content</label>
-
         <textarea
-          type="text"
           className="text-sm text-slate-950 outline-none bg-slate-50 p-2 rounded"
           placeholder="Content..."
           rows={10}
@@ -120,7 +90,7 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
       </div>
 
       <div className="mt-3">
-        <label className="input-label text-red-400 uppercase">tags</label>
+        <label className="input-label text-red-400 uppercase">Tags</label>
         <TagInput tags={tags} setTags={setTags} />
       </div>
 
@@ -128,7 +98,7 @@ const AddEditNotes = ({ onClose, noteData, type, getAllNotes }) => {
 
       <button
         className="btn-primary font-medium mt-5 p-3"
-        onClick={handleAddNote}
+        onClick={handleAddOrEdit}
       >
         {type === "edit" ? "UPDATE" : "ADD"}
       </button>
