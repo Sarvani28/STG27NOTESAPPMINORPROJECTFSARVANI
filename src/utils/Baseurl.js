@@ -1,1 +1,0 @@
-//export const BASE_URL = "https://stg-27-notesappmnsarvani.vercel.app";
