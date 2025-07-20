@@ -10,13 +10,13 @@ const ProfileInfo = ({ userInfo, onLogout }) => {
     )
   }
 
-  const displayName = userInfo.username || userInfo.name || "User"
+  const displayName = userInfo.username?.trim() || userInfo.name?.trim() || "User"
   const initials = getInitials(displayName)
 
   return (
     <div className="flex items-center gap-3">
       <div className="w-10 h-10 flex items-center justify-center rounded-full text-slate-950 font-medium bg-slate-100">
-        {initials || "U"}
+        {initials}
       </div>
 
       <div>
