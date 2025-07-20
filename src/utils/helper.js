@@ -11,3 +11,9 @@ export const getInitials = (name = "") => {
     .map((w) => w[0]?.toUpperCase() || "")
     .join("")
 }
+
+export const validateEmail = (email) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+  return regex.test(email)
+}
