@@ -1,4 +1,3 @@
-// utils/helper.js
 export const getInitials = (name = "") => {
   if (!name.trim()) return ""
 
