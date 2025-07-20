@@ -5,9 +5,9 @@ import { Link, useNavigate } from "react-router-dom"
 import { useDispatch, useSelector } from "react-redux"
 import { toast } from "react-toastify"
 import {
-  signInSuccess,
-  signoutFailure,
   signoutStart,
+  signoutSuccess,
+  signoutFailure,
 } from "../redux/user/userSlice"
 import axios from "axios"
 
@@ -16,7 +16,7 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  // 🔴 Get user info from Redux store
+  // ✅ Get logged-in user info from Redux
   const userInfo = useSelector((state) => state.user.currentUser)
 
   const handleSearch = () => {
@@ -45,12 +45,12 @@ const Navbar = ({ onSearchNote, handleClearSearch }) => {
         return
       }
 
+      dispatch(signoutSuccess())
       toast.success(res.data.message)
-      dispatch(signInSuccess())
       navigate("/")
     } catch (error) {
-      toast.error(error.message)
       dispatch(signoutFailure(error.message))
+      toast.error("Logout failed")
     }
   }
 

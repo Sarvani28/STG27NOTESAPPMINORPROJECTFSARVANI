@@ -1,14 +1,11 @@
+// utils/helper.js
 export const getInitials = (name = "") => {
-  if (!name.trim()) return "U"
+  if (!name.trim()) return ""
+
   const words = name.trim().split(/\s+/)
-
-  if (words.length === 1) {
-    return words[0].slice(0, 2).toUpperCase() // e.g., TestUser → "TU"
-  }
-
   return words
     .slice(0, 2)
-    .map((w) => w[0]?.toUpperCase() || "")
+    .map(word => word[0].toUpperCase())
     .join("")
 }
 

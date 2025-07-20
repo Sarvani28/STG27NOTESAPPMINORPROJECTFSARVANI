@@ -10,7 +10,8 @@ const ProfileInfo = ({ userInfo, onLogout }) => {
     )
   }
 
-  const displayName = userInfo.username?.trim() || userInfo.name?.trim() || "User"
+  const rawName = userInfo.username || userInfo.name || "User"
+  const displayName = rawName.trim().replace(/\s+/g, " ") // Removes extra spaces
   const initials = getInitials(displayName)
 
   return (
@@ -20,7 +21,7 @@ const ProfileInfo = ({ userInfo, onLogout }) => {
       </div>
 
       <div>
-        <p className="text-sm font-medium">{displayName}</p>
+        <p className="text-sm font-medium capitalize">{displayName}</p>
       </div>
 
       <button
