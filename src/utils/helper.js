@@ -1,18 +1,19 @@
-export const getInitials = (name) => {
-  if (!name) return ""
-  const words = name.split(" ")
+export const getInitials = (name = "") => {
+  if (!name.trim()) return ""
 
-  let initials = ""
+  const words = name.trim().split(/\s+/)
 
-  for (let i = 0; i < Math.min(words.length, 2); i++) {
-    initials += words[i][0]
-  }
-
-  return initials.toUpperCase()
+  return words
+    .slice(0, 2)
+    .map(word => word[0].toUpperCase())
+    .join("")
 }
 
-export const validateEmail = (email) => {
+/**
+ * Validates an email address format
+ * e.g., "test@example.com" → true
+ */
+export const validateEmail = (email = "") => {
   const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-  return regex.test(email)
+  return regex.test(email.trim())
 }
